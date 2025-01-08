@@ -22,7 +22,7 @@ sidebar:
 
 웹 브라우저는 자동으로 https 프로토콜이 적용되므로 우리가 특정 웹 사이트의 홈페이지에 접속하기 위해 입력하는 것이 그 사이트의 도메인이 됩니다. 그리고 홈페이지 내에서 사이트맵이나 게시글 등 버튼을 누르면 출력되는 화면이나 콘텐츠 자체를 지칭할 땐 URL을 사용해요. 따라서 별도의 웹 서핑 없이 사이트에 저장된 콘텐츠를 바로 불러오기 위해서는 도메인이 아닌 그 콘텐츠의 URL을 입력해서 불러오는 것이 훨씬 편리할 수 있습니다.
 
-<img title="" src="../../images/2024-12-05-dns_theory/e55b9024750eccb578330a9054aa540912a42137.jpg" alt="loading-ag-1223" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/e55b9024750eccb578330a9054aa540912a42137.jpg" alt="loading-ag-1223" data-align="center">{: .align-center}
 
 ##### Root
 
@@ -54,7 +54,7 @@ SLD와 TLD를 합친 형태로, 사이트의 고유한 이름과 운영 목적, 
 
 ## 도메인 이름 해석 과정
 
-<img title="" src="../../images/2024-12-05-dns_theory/197d96e4fff31ff02653861332ec7cba1bf9a9ee.png" alt="loading-ag-318" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/197d96e4fff31ff02653861332ec7cba1bf9a9ee.png" alt="loading-ag-318" data-align="center">{: .align-center}
 
 ##### Pre) hosts 파일에 질의
 
@@ -62,9 +62,9 @@ SLD와 TLD를 합친 형태로, 사이트의 고유한 이름과 운영 목적, 
 
 위의 이미지에서 확인할 수 있는 단계는 아니지만, 사용자의 PC는 정식으로 DNS 서버에 도메인 이름 해석을 질의하기 전에 hosts 라는 설정 파일을 확인합니다. 정확히는 Unix 계열의 OS에서는 /etc/hosts, Windows 계열에서는 C:\Windows\System32\drivers\etc\hosts 파일을 확인하죠. 이 파일에 요청하는 도메인에 mapping하는 IP 주소가 있으면 해당 IP 주소를 응답받아 접속하게 됩니다. 파일에 기재된 IP 주소가 해당 도메인의 실제 IP 주소가 아니더라도 hosts 파일에 적혀 있다면 무조건 해당 IP 주소를 응답해요. 꽤 중요한 역할을 하는 파일이기 때문에 hosts 파일은 관리자 권한을 가져야만 접근할 수 있도록 설정되어 있습니다. 이 파일은 주로 개발자나 엔지니어 분들이 PROD 환경의 실제 도메인을 갖고 DEV 혹은 TEST 환경에 테스트 목적으로 접속할 때 사용되곤 합니다.
 
-<img title="" src="../../images/2024-12-05-dns_theory/6a9a162971357a2ca91567031ab4de6155fcb81b.png" alt="loading-ag-990" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/6a9a162971357a2ca91567031ab4de6155fcb81b.png" alt="loading-ag-990" data-align="center">{: .align-center}
 
-<img title="" src="../../images/2024-12-05-dns_theory/b275804f30d1c3e1f02504ae1cbda505e357fc65.png" alt="loading-ag-992" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/b275804f30d1c3e1f02504ae1cbda505e357fc65.png" alt="loading-ag-992" data-align="center">{: .align-center}
 
 각각 윈도우와 우분투 리눅스 OS에서 hosts 파일을 위와 같이 편집하면 통상적인 구글 사이트의 IP 주소가 아닌 기재된 주소 1.2.3.4로 접속하게 됩니다. 
 
@@ -104,7 +104,7 @@ Local DNS는 응답받은 www.google.com도메인의 IP를 사용자에 응답�
 
 ## DNS Zone과 레코드
 
-<img title="" src="../../images/2024-12-05-dns_theory/b13ae716964f86b99937240eefd631921bb7b03f.png" alt="loading-ag-339" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/b13ae716964f86b99937240eefd631921bb7b03f.png" alt="loading-ag-339" data-align="center">{: .align-center}
 
 이미지는 example.com라는 도메인에 대한 DNS Zone 및 내부 레코드를 예시로 표현한 것입니다. 이처럼 특정 도메인과 용도별 서브도메인에 대한 mapping 정보를 테이블 형태로 저장한 것을 DNS Zone 이라고 합니다. 그리고 DNS Zone 내 각각의 mapping 데이터 row를 레코드 라고 부릅니다.
 
@@ -122,7 +122,7 @@ Local DNS는 응답받은 www.google.com도메인의 IP를 사용자에 응답�
 
 DNS Zone은 IETF 표준을 준수하기 위해 위의 레코드 외 SOA라는 정보를 필수로 갖고 있습니다. SOA는 Start Of Authority의 약자로 권한의 시작을 의미하며 도메인 관리자 주소, 기본 네임 서버, 요청 재시도 시간, DNS 캐싱 시간(TTL) 등 중요한 정보를 저장하고 있습니다. 아래와 같이 nslookup 명령어 조합을 통해 쉽게 확인해볼 수 있습니다.
 
-<img title="" src="../../images/2024-12-05-dns_theory/dd1f3265deff928899ea784882826eb985662c2d.png" alt="loading-ag-374" data-align="center">
+<img title="" src="../../images/2024-12-05-dns_theory/dd1f3265deff928899ea784882826eb985662c2d.png" alt="loading-ag-374" data-align="center">{: .align-center}
 
 ### DNS 운영 시 주의 사항
 
