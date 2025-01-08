@@ -40,7 +40,7 @@ metrics-server는 쿠버네티스 클러스터 구성 시 기본으로 설치되
 
 쿠버네티스 공식 문서의 kubelet config 페이지를 살펴 보면 Self-Signed 인증서 대신 인증서 API를 통해 인증서를 생성할 수 있는 **`serverTLSBootstrap`** 설정값을 소개하고 있습니다. 이 설정값은 default로 false로 지정되어 있기 때문에 Kubelet Configuration에서 true를 명시적으로 지정해 주고 kubelet을 restart 해주게 되면 kubelet은 자동으로 CSR을 생성하고 등록하게 됩니다.
 
-<img title="" src="../../images/2025-01-02-metrics-server/2025-01-07-19-15-01-image.png" alt="loading-ag-809" data-align="center">
+<img title="" src="../../images/2025-01-02-metrics-server/2025-01-07-19-15-01-image.png" alt="loading-ag-809" data-align="center">{: .align-center}
 
 ```bash
 sudo systemctl restart kubelet
@@ -48,11 +48,11 @@ sudo systemctl restart kubelet
 
 해당 CSR을 승인해주게 되면 kubelet은 자동적으로 클러스터 CA의 서명을 받은 새로운 서버 인증서로 API를 제공하게 됩니다.
 
-<img title="" src="../../images/2025-01-02-metrics-server/e3484a0b3ae2aa471431160335c4d3f25e4ece8b.png" alt="loading-ag-866" data-align="center">
+<img title="" src="../../images/2025-01-02-metrics-server/e3484a0b3ae2aa471431160335c4d3f25e4ece8b.png" alt="loading-ag-866" data-align="center">{: .align-center}
 
 마찬가지로 다른 노드의 kubelet Configuration을 동일하게 설정하고 재시작한 다음 CSR을 승인하면
 
-<img title="" src="../../images/2025-01-02-metrics-server/2025-01-07-19-27-22-image.png" alt="loading-ag-874" data-align="center">
+<img title="" src="../../images/2025-01-02-metrics-server/2025-01-07-19-27-22-image.png" alt="loading-ag-874" data-align="center">{: .align-center}
 
 문제없이 metric을 가져와 보여주는 것을 확인할 수 있었습니다.
 

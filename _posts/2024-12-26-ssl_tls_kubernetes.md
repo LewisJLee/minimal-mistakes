@@ -66,7 +66,7 @@ TLS 인증서는 **서버 인증서, 체인 인증서, 루트 인증서** 체인
 
 서버가 인증서를 발급받아 저장하기 위해서는 먼저 자신의 도메인 이름으로 한 **CSR(Certificate Signing Request)** 을 생성해야 합니다. 이 CSR을 CA에 전달하면 CA는 서버와 도메인에 대한 확인 절차를 거치고 서명합니다. 그리고 서명된 서버 인증서와 체인 인증서, 루트 인증서 체인을 서버에 발급합니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-13-46-17-image.png" alt="loading-ag-1174" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-13-46-17-image.png" alt="loading-ag-1174" data-align="center">{: .align-center}
 
 제가 기술블로그를 작성하는 github.io 도메인의 경우 그림과 같이 DigiCert라는 CA의 인증을 통한 인증서 체인이 구성되어 있습니다. CA는 이 외에도 Symantec, GlobalSign 등이 있는데 우리가 사용하는 웹 브라우저는 웬만한 CA의 루트 인증서 정보를 모두 갖고 있습니다. 그래서 서버가 제시하는 인증서가 CA로부터 서명된 신뢰할 수 있는 인증서인지 확인할 수 있습니다. 이렇게 검증했을 때 신뢰할 수 있는 사이트일 경우 TLS 세션이 성사되고 그렇지 않을 경우 악의적인 제 3자로 간주되어 신뢰할 수 없는 사이트임을 표시하게 됩니다.
 
@@ -104,13 +104,13 @@ CSR을 승인하고 생성된 사용자에게 RBAC를 통해 쿠버네티스를 
 
 ### Scheduler
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-19-13-58-image.png" alt="loading-ag-1634" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-19-13-58-image.png" alt="loading-ag-1634" data-align="center">{: .align-center}
 
 마찬가지로 Scheduler는 어떤 노드에 파드를 배치하면 좋은지 API 서버에 알리는 역할을 하는 클라이언트 컴포넌트입니다. 그래서 지정된 kubeconfig 파일에 클러스터 CA로 서명된 인증서 데이터와 CA 루트 인증서 데이터가 저장되어 있고 이 설정 파일을 갖고 API 서버에 접근할 수 있습니다.
 
 ### kube-proxy
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/6b377cef142d6272daec9bb5e8f2695671b53967.png" alt="loading-ag-1684" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/6b377cef142d6272daec9bb5e8f2695671b53967.png" alt="loading-ag-1684" data-align="center">{: .align-center}
 
 kube-proxy는 서비스를 비롯한 쿠버네티스 네트워크 동작을 관리하는 역할로 역시 API 서버 호출이 필요한 클라이언트 컴포넌트입니다. 역시 지정된 kubeconfig 파일에 클러스터 CA로 서명된 인증서 데이터와 CA 루트 인증서 데이터가 저장되어 있고 이 설정 파일을 갖고 API 서버에 접근할 수 있습니다.
 
@@ -120,26 +120,26 @@ kubelet은 노드에서 파드를 실행시키는 데몬으로 상태 정보를 
 
 **kubelet 서버 인증서는 초기 kubeadm 구성 시 노드에서 자체적으로 발급하고 서명하는 Self-Signed 인증서로 생성됩니다.** 따라서 발급자와 Subject가 노드 이름으로 되어 있는 것을 확인할 수 있습니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-07-15-35-25-image.png" alt="loading-ag-406" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-07-15-35-25-image.png" alt="loading-ag-406" data-align="center">{: .align-center}
 
 클라이언트 인증서를 살펴보면 쿠버네티스 클러스터로부터 발급되었다는 점과 Subject가 kubelet 데몬이 실행되는 노드 그룹으로 되어있는 것을 확인할 수 있습니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-19-59-36-image.png" alt="loading-ag-1737" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-19-59-36-image.png" alt="loading-ag-1737" data-align="center">{: .align-center}
 
 ## ETCD의 인증서
 
 etcd는 쿠버네티스 클러스터에 대한 데이터를 key=value 형태로 저장하는 메모리 기반 데이터베이스로 Control-Plane에 스태틱 파드 형태로 배치되거나 클러스터 외부에 별도로 구성할 수 있습니다. 따라서 **자체 CA 루트 인증서와 서버 인증서를 갖고 있습니다.** 이들 모두 etcd CA에 의해 서명되어 있는 것을 확인할 수 있습니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-06-31-image.png" alt="loading-ag-1749" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-06-31-image.png" alt="loading-ag-1749" data-align="center">{: .align-center}
 
 ## APIServer의 인증서
 
 API 서버는 다른 컴포넌트로부터 접근 받는 서버 역할과 kubelet 데몬에 파드 실행을 명령하거나 etcd에 데이터를 저장하는 클라이언트 역할을 함께 수행합니다. 그래서 서버 인증서와kubelet 접근을 위한 클라이언트 인증서, etcd 접근을 위한 클라이언트 인증서를 하나씩 보유하고 있습니다. 서버 인증서와 kubelet 클라이언트 인증서는 클러스터 CA에 의해 서명되어 있고 etcd 클라이언트 인증서는 etcd CA에 의해 서명되어 있습니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-09-26-image.png" alt="loading-ag-1759" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-09-26-image.png" alt="loading-ag-1759" data-align="center">{: .align-center}
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-10-33-image.png" alt="loading-ag-1763" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-06-20-10-33-image.png" alt="loading-ag-1763" data-align="center">{: .align-center}
 
 쿠버네티스 API 서버를 호출할 때 사용하는 이름은 각 컴포넌트와 객체별로 다릅니다. 따라서 API 서버의 서버 인증서 SANs(Subject Alternative Name)는 API 서버로써 호출될 수 있는 여러 가지 이름과 IP 주소를 포함하고 있는 것이 특징입니다.
 
-<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-07-15-11-52-image.png" alt="loading-ag-396" data-align="center">
+<img title="" src="../../images/2024-12-26-ssl_tls_kubernetes/2025-01-07-15-11-52-image.png" alt="loading-ag-396" data-align="center">{: .align-center}
