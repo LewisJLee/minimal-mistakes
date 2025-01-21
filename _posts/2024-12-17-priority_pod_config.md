@@ -22,7 +22,7 @@ sidebar:
 
 ```docker
 FROM    busybox:1.28
-ENV	    TIME=60
+ENV        TIME=60
 ```
 
 ```yaml

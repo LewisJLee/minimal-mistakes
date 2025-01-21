@@ -73,11 +73,7 @@ serverTLSBootstrap: true
 kubeadm init --config=kubelet-config.yaml
 ```
 
-
-
-
-
-#### <참고>
+#### References
 
 [kubelet &quot;서버&quot; 를 위한 인증서 (kubelet.crt, kubelet.key) (feat: Metrics-Server TLS 인증서 오류 조치) by "Daniel Kim 의 기술 블로그"](https://www.kimsehwan96.com/kubelet-server-certificates/)
 
