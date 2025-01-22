@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "EFK와 ELK Stack로 중앙화된 log 모니터링 체험하기"
+title:  "EFK와 ELK Stack으로 중앙화된 log 모니터링 체험하기"
 categories: SRE
 tag: [SRE, ELK, Elasticsearch, FluentD, Logstash, Kibana, Kubernetes, 쿠버네티스]
 author_profile: false
@@ -22,7 +22,7 @@ sidebar:
 
 ## Log 처리 Pipeline 구성
 
-EFK와 ELK Stack은 애플리케이션 컴포넌트로부터 로그를 수집하고 데이터베이스에 보관하여 UI에 출력하는 형식으로 파이프라인을 구성합니다. 여기서 **EFK**는 **Elasticsearch + FluentD + Kibana**로 구성되는 파이프라인을 의미하고, **ELK**는 **Elasticsearch + Logstash + Kibana**로 구성되는 파이프라인을 의미합니다. 로그 수집기를 FluentD와 Logstash중 어떤 것을 선택하느냐의 차이로 두 개의 Stack으로 나뉘게 됩니다.
+EFK와 ELK Stack은 애플리케이션 컴포넌트로부터 로그를 수집하고 데이터베이스에 보관하여 UI에 출력하는 형식으로 파이프라인이 구성되는데요. 여기서 **EFK**는 **Elasticsearch + FluentD + Kibana**로 구성되는 파이프라인을 의미하고, **ELK**는 **Elasticsearch + Logstash + Kibana**로 구성되는 파이프라인을 의미합니다. 로그 수집기를 FluentD와 Logstash중 어떤 것을 선택하느냐의 차이로 두 개의 Stack으로 나뉘게 되죠.
 
 ### Elasticsearch
 
@@ -38,7 +38,7 @@ Elasticsearch는 강력한 검색 엔진 기능을 갖춘 Document 기반 데이
 
 ### 최소 버전의 경량화 로그 수집기 Fluent-Bit
 
-EFK 스택에서 엘라스틱서치와 키바나와 함께 주로 사용되는 FluentD는 1000가지 이상의 다양한 출력 대상 플러그인을 지원하는데요. 저는 설정 방법이 크게 다르지 않은 최소 버전의 **Fluent-Bit**를 사용하여 구성해 봤습니다.
+FluentD는 CNCF 재단에서 개발한 로그 수집기로 1000가지 이상의 다양한 출력 대상 플러그인을 지원하는데요. 저는 설정 방법이 크게 다르지 않은 최소 버전으로 개발된 **Fluent-Bit**를 사용하여 구성해 봤습니다.
 
 Fluent-Bit는 **Daemonset**으로 실행하여 각 노드에 파드를 하나씩 배치해서 로그를 수집하고, 애플리케이션 로그 뿐만 아니라 노드의 시스템 로그 또한 수집하고 처리할 수 있습니다.
 
@@ -127,13 +127,13 @@ subjects:
   namespace: logging
 ```
 
-다음은 플루언트 비트에 주입할 설정 파일 configmap입니다. 플루언트 비트는 로그 수집 및 처리 과정을 **INPUT->PARSER->FILTER->OUTPUT** 순서대로 처리하는데요.
+다음은 플루언트 비트에 주입할 설정 파일 configmap입니다. 플루언트 비트는 로그 수집 및 처리 과정을 **INPUT->PARSER->FILTER->OUTPUT** 순서대로 처리하는데요. 각 단계별로 configuration 파일이 configmap 안에서 나뉘어 있는 것을 볼 수 있습니다.
 
- INPUT은 로그 수집 경로와 접미사로 붙일 붙일 태그를 정의하고 PARSER는 수집된 로그를 의미 있는 형태로 변환하는 역할을 수행합니다. 그리고 FILTER에서는 메타 데이터를 추가하거나 불필요한 데이터를 제외하고 OUTPUT에서는 필터링까지 거친 로그 데이터를 출력하거나 저장할 곳을 지정합니다.
+ INPUT 단계는 로그 수집 경로와 접미사로 붙일 붙일 태그를 정의하고 PARSER는 수집된 로그를 의미 있는 형태로 변환하는 역할을 수행합니다. 그리고 FILTER에서는 메타 데이터를 추가하거나 불필요한 데이터를 제외하고 OUTPUT에서는 필터링까지 거친 로그 데이터를 출력하거나 저장할 곳을 지정합니다.
 
-아래 설정을 보면 로그에 붙일 태그에 대한 정규 표현식이 정의되어 있고 최종적으로 특정 태그를 가진 로그를 엘라스틱서치에 저장한다고 설정되어 있습니다. 어떤 OUTPUT 규칙과도 일치하지 않는 로그는 출력되거나 저장되지 않습니다.
+설정을 보면 로그에 붙일 태그에 대한 정규 표현식이 정의되어 있고 최종적으로 특정 태그를 가진 로그를 엘라스틱서치에 저장한다고 설정되어 있습니다. 어떤 OUTPUT 규칙과도 일치하지 않는 로그는 출력되거나 저장되지 않습니다.
 
-플루언트 비트 참조 문서에서 다양한 예제 PARSER를 찾아보실 수 있습니다. 저는 샘플 Nginx 애플리케이션의 로그를 수집하고 처리해보기 위해 nginx PARSER와 OUTPUT 규칙을 추가해 주었습니다.
+저는 샘플 Nginx 애플리케이션의 로그를 수집하고 처리해보기 위해 nginx PARSER와 OUTPUT 규칙을 추가해 주었습니다.
 
 ```yaml
 apiVersion: v1
@@ -202,9 +202,9 @@ data:
 
 ### Elasticsearch
 
-엘라스틱서치는 Master-Slave 관계를 뚜렷하게 할 수 있는 **Statefulset**으로 배치합니다. 저는 local에서 vagrant 기반 VM으로 클러스터를 구축했기 때문에 공유 디렉토리를 mount하여 파드가 삭제되어도 데이터를 저장할 수 있도록 했는데요. **실제 운영 환경에서는 클러스터와 스토리지 유형에 따라 영구 볼륨을 생성하고 volumeClaimTemplate를 통해 데이터를 스토리지에 보관할 수 있습니다.**
+엘라스틱서치는 Master-Slave 관계를 뚜렷하게 할 수 있는 **Statefulset**으로 배치합니다. 저는 vagrant 공유 디렉토리를 mount하여 파드가 삭제되어도 데이터를 저장할 수 있도록 했는데요. **실제 운영 환경에서는 클러스터와 스토리지 유형에 따라 영구 볼륨을 생성하고 volumeClaimTemplate를 통해 데이터를 스토리지에 보관할 수 있습니다.**
 
-파드 내에는 엘라스틱서치가 mount된 볼륨에 접근할 수 있는 권한을 가질 수 있도록 소유자 정보를 변경하는 초기 컨테이너가 있습니다. 그리고 엘라스틱서치는 java 기반으로 개발되어 실행되기 때문에 JVM Heap 메모리 사이즈 설정값을 적절하게 변경해 주었습니다.
+파드 내에는 엘라스틱서치가 mount된 볼륨에 접근할 수 있는 권한을 가질 수 있도록 소유자 정보를 변경하는 초기 컨테이너가 있습니다. 그리고 엘라스틱서치는 java 기반으로 개발되어 실행되기 때문에 JVM Heap 메모리 사이즈 설정값을 테스트 환경에 적절하게 변경해 주었습니다.
 
 엘라스틱서치는 외부에서 **9200** 포트로 접근할 수 있고 비록 이번 테스트에는 환경 상 단일 노드로 실행하지만 여러 레플리카로 실행할 경우 서로 **9300** 포트를 통해 통신하게 됩니다.
 
@@ -280,7 +280,7 @@ spec:
   type: ClusterIP
 ```
 
-단일 노드로 실행하기 때문에 엘라스틱서치에 주입할 설정 파일의 discovery.type 값을 single-node 설정해 주었는데요. **여러 레플리카로 실행하게 된다면 discovery.seed_host 값에 엘라스틱서치 노드 주소들을, cluster.initial_master_nodes 값에 마스터로 지정할 노드 hostname을 설정해 주어야 오류를 피할 수 있습니다.**
+단일 노드로 실행하기 때문에 엘라스틱서치에 주입할 설정 파일의 discovery.type 값을 single-node 설정해 주었는데요. **만약 여러 레플리카로 실행하게 된다면 discovery.seed_host 값에 엘라스틱서치 노드 주소들을, cluster.initial_master_nodes 값에 마스터로 지정할 노드 hostname을 설정해 주어야 오류를 피할 수 있습니다.**
 
 ```yaml
 apiVersion: v1
@@ -301,7 +301,7 @@ data:
 
 ### Kibana
 
-수집한 로그를 처리하고 저장했다가 UI로 출력할 Kibana를 배치합니다. 로컬 VM으로 생성한 쿠버네티스 클러스터 특성 상 LoadBalancer로 외부로 노출하기 어려워 NodePort로 외부에서 접근할 수 있도록 해줬습니다.
+수집한 로그를 처리하고 저장했다가 UI로 출력할 Kibana를 배치합니다. 로컬 PC에서 vagrant로 생성한 쿠버네티스 클러스터 특성 상 LoadBalancer를 외부로 노출하기 어려워 NodePort로 외부에서 접근할 수 있도록 해줬습니다.
 
 ```yaml
 apiVersion: v1
@@ -380,7 +380,7 @@ spec:
 
 <img title="" src="../../images/2025-01-15-centralized-monitoring/671cfe670dd8032345f7676e4a543a6c4365b438.png" alt="loading-ag-703" data-align="center">
 
-그렇다면 Logstash를 사용한 ELK Stack은 어떨까요? Logstash를 사용할 경우 FileBeat를 사용하여 로그를 수집하고 Logstash를 사용하여 Parsing 및 출력을 처리하게 됩니다. 엘라스틱서치와 키바나는 그대로 두고 FileBeat와 Logstash는 플루언트 비트와 동일하게 쿠버네티스 메타데이터를 추가한 nginx 로그를 수집하고 처리할 수 있도록 **elastic 사의 공식 문서**를 참고하여 configuration 해줬습니다.
+그렇다면 Logstash를 사용한 ELK Stack은 어떨까요? ELK Stack에서는 주로 FileBeat를 사용하여 로그를 수집하고 Logstash를 사용하여 Parsing 및 출력을 처리하게 됩니다. 엘라스틱서치와 키바나는 그대로 두고 **FileBeat + Logstash**가 플루언트 비트처럼 쿠버네티스 메타데이터가 추가된 nginx 로그를 수집하고 처리할 수 있도록 **elastic 사의 공식 문서**를 참고하여 configuration 해줬습니다.
 
 ### FileBeat
 
@@ -458,7 +458,7 @@ spec:
           path: /var/lib/docker/containers
 ```
 
-ELK 스택에서는 FileBeat에서 쿠버네티스 메타 데이터를 붙일 수 있습니다. 플루언트 비트에서 사용한 serviceaccount와 RBAC를 동일하게 적용하고 데몬셋 형태로 실행해 줍니다.
+FileBeat 설정에 **processor**를 정의하여 쿠버네티스 메타 데이터를 붙일 수 있도록 해줬고 플루언트 비트에서 사용한 serviceaccount와 RBAC를 동일하게 적용하고 데몬셋 형태로 실행해 주었습니다.
 
 ### Logstash
 
@@ -511,7 +511,7 @@ data:
     path.config: /usr/share/logstash/pipeline
 ```
 
-Logstash 역시 java로 개발된 도구라서 어느 정도의 힙 메모리 사이즈를 요구했는데요. 엘라스틱서치의 절반 가량인 128로 맞추고 실행하니 FileBeat에서 정상적으로 세션을 맺지 못하는 현상이 있어서 똑같이 256으로 설정하고 실행해 주었습니다. 이러한 Logstash를 엘라스틱서치 파드와 같은 노드에 배치하면 노드 메모리 사용률과 LoadAvg가 증가하여 전체 파이프라인에 영향을 줄 수 있습니다. 그래서 매니페스트에 **podAntiAffinity**를 추가하여 엘라스틱서치와 다른 노드에 파드를 배치하도록 해줬습니다.
+Logstash 역시 java로 개발된 도구라서 어느 정도의 힙 메모리 사이즈를 요구했는데요. 엘라스틱서치의 절반 가량인 128로 맞추고 실행해보니 FileBeat에서 정상적으로 세션을 맺지 못하는 현상이 있어서 똑같이 256으로 설정하고 실행해 주었습니다. 이러한 Logstash를 엘라스틱서치 파드와 같은 노드에 배치하면 노드 메모리 사용률과 LoadAvg가 증가하여 전체 파이프라인에 영향을 줄 수 있어요. 그래서 매니페스트에 **podAntiAffinity**를 추가하여 엘라스틱서치와 다른 노드에 파드를 배치하도록 해줬습니다.
 
 ```yaml
 apiVersion: apps/v1
@@ -600,6 +600,8 @@ FileBeat와 플루언트디(플루언트 비트), Logstash는 **개발자의 부
 #### References
 
 Elton Stoneman. (2021). 쿠버네티스 교과서. 길벗출판사
+
+[YAML Configuration from Fluent Bit: Official Manual](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/yaml)
 
 [Container input, Filebeat Reference [7.10] from Elastic](https://www.elastic.co/guide/en/beats/filebeat/7.10/filebeat-input-container.html)
 
