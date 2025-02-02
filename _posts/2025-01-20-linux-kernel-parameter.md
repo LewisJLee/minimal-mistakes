@@ -51,7 +51,7 @@ kernel.core_uses_pid = 1    #   Core Dump 생성 활성화
 ```
 net.core.somaxconn=65535    #   Connection 대기 최대 수
 net.ipv4.tcp_max_syn_backlog = 8192 #   SYN 수신 Backlog 최대 크기
-net.ipv4.tcp_fin_timeout = 10   #   FIN Packet 대기 시간
+net.ipv4.tcp_fin_timeout = 10   #   FIN Segment 대기 시간
 net.ipv4.tcp_keepalive_time = 10    #    TCP KeepAlive 주기
 net.ipv4.tcp_tw_reuse = 0   #   TIME_WAIT 상태 로컬 포트 재사용 비활성화
 net.ipv4.ip_local_port_range = 15000    64000   #   클라이언트 로컬 포트 범위
@@ -65,13 +65,13 @@ net.ipv4.tcp_retries1 = 2   #   TCP 연결 자체에 문제가 있을 때 재시
 추가적으로 데이터베이스는 다른 서버에 주로 먼저 연결 요청을 하지 않지만 애플리케이션 서버로부터 많은 요청을 수신하기 때문에 somaxconn와 max_syn_backlog 정도는 꼭 설정해 주는 것이 좋습니다.
 ### 악성 공격 대응을 위한 파라미터
 ```
-net.ipv4.tcp_syncookies = 1 #   보내는 SYN Packet에 Cookie값 추가
+net.ipv4.tcp_syncookies = 1 #   보내는 SYN Segment에 Cookie값 추가
 net.ipv4.tcp_synack_retries = 2 #   Passive SYN/ACK 재전송 횟수
 ```
-SYN Flooding 공격을 방지하고 정상적인 TCP 연결을 보장하기 위한 설정입니다. <span style="color:red">SYN Flooding은 다수의 좀비 노드를 통해 SYN 패킷을 동시다발적으로 전송하고 돌아오는 ACK/SYN 패킷에 대한 응답을 제공하지 않아 시스템을 장시간 대기 상태로 만드는 공격</span>인데요. ACK/SYN 패킷을 응답할 때 쿠키값을 추가하여 같은 Source로부터 다시 수신된 SYN 패킷을 무시하고 SYN/ACK 응답 횟수 제한을 설정하여 SYN Flooding 공격에 효과적으로 대응할 수 있습니다.
+SYN Flooding 공격을 방지하고 정상적인 TCP 연결을 보장하기 위한 설정입니다. <span style="color:red">SYN Flooding은 다수의 좀비 노드를 통해 SYN 세그먼트를 동시다발적으로 전송하고 돌아오는 ACK/SYN에 대한 응답을 제공하지 않아 시스템을 장시간 대기 상태로 만드는 공격</span>인데요. ACK/SYN를 응답할 때 쿠킷값을 추가하여 같은 Source로부터 다시 수신된 SYN를 무시하고 SYN/ACK 응답 횟수 제한을 설정하여 SYN Flooding 공격에 효과적으로 대응할 수 있습니다.
 ```
 net.ipv4.conf.all.arp_notify = 1    #   IPv4 주소나 장비 변경 시 알림
-net.ipv4.conf.default.accept_redirects = 0  #   redirect된 ICMP Packet 수신 비활성화
+net.ipv4.conf.default.accept_redirects = 0  #   redirect된 ICMP 수신 비활성화
 net.ipv4.conf.default.send_redirects = 0    #   ICMP Packet redirect 전송 비활성화
 net.ipv4.conf.default.accept_source_route = 0   #   Source Routing 수신 비활성화
 net.ipv4.conf.default.secure_redirects = 0  #   게이트웨이로부터의 redirect 비활성화
