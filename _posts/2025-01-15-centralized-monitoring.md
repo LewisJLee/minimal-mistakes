@@ -16,15 +16,15 @@ sidebar:
 
 ## Log 처리 Pipeline 구성
 
-EFK와 ELK Stack은 애플리케이션 컴포넌트로부터 로그를 수집하고 데이터베이스에 보관하여 UI에 출력하는 형식으로 파이프라인이 구성되는데요. 여기서 **EFK**는 **Elasticsearch + FluentD + Kibana**로 구성되는 파이프라인을 의미하고, **ELK**는 **Elasticsearch + Logstash + Kibana**로 구성되는 파이프라인을 의미합니다. 로그 수집기를 FluentD와 Logstash중 어떤 것을 선택하느냐의 차이로 두 개의 Stack으로 나뉘게 되죠.
+EFK와 ELK Stack은 애플리케이션 컴포넌트로부터 로그를 수집하고 데이터베이스에 보관하여 UI에 출력하는 형식으로 파이프라인이 구성됩니다. 여기서 **EFK**는 **Elasticsearch + FluentD + Kibana**로 구성되는 파이프라인을 의미하고, **ELK**는 **Elasticsearch + Logstash + Kibana**로 구성되는 파이프라인을 의미하는데요. 로그 수집기를 FluentD와 Logstash중 어떤 것을 선택하느냐의 차이로 두 개의 Stack으로 나뉘게 됩니다.
 
 ### Elasticsearch
 
-Elasticsearch는 강력한 검색 엔진 기능을 갖춘 Document 기반 데이터베이스 입니다. **고정된 스키마를 갖지 않는 형태인 도큐먼트** 단위로 데이터를 저장하며, 관계형 데이터베이스에서 데이터베이스에 상응하는 **인덱스(Index)** 라는 곳에 저장합니다. 엘라스틱서치는 **RESTful** 기반 데이터베이스로 데이터에 대한 CRUD(Create, Read, Update, Delete)를 HTTP Method로 처리할 수 있고, 공유 스토리지를 사용하는 여러 개의 노드로 구성된 클러스터로 실행하거나 AWS의 Opensearch같은 Public Cloud 관리형 서비스로 사용할 수도 있습니다.
+Elasticsearch는 강력한 검색 엔진 기능을 갖춘 Document 기반 데이터베이스 입니다. **고정된 스키마를 갖지 않는 형태인 도큐먼트** 단위로 데이터를 저장하며, RDBMS에서 데이터베이스에 상응하는 **인덱스(Index)** 라는 곳에 저장합니다. 엘라스틱서치는 **RESTful** 기반 데이터베이스로 데이터에 대한 CRUD(Create, Read, Update, Delete)를 HTTP Method로 처리할 수 있고, 공유 스토리지를 사용하는 여러 개의 노드로 구성된 클러스터로 실행하거나 AWS의 Opensearch같은 Public Cloud 관리형 서비스로 사용할 수도 있습니다.
 
 ### Kibana
 
- 엘라스틱서치와 같이 Elastic사에서 개발하여 호환성과 레퍼런스 측면에서 유리하기 때문에 엘라스틱서치 기반 시각화 도구는 대부분 Kibana가 사용되는데요. **KQL(Kibana Query Language)** 를 통해 데이터를 엘라스틱서치에 질의하며, 최종적으로 엔지니어가 로그를 확인할 수 있는 Frontend로 사용됩니다.
+ 엘라스틱서치와 같이 Elastic사에서 개발하여 호환성과 레퍼런스 측면에서 유리하기 때문에 엘라스틱서치 기반 시각화 도구는 대부분 Kibana가 사용되는데요. **KQL(Kibana Query Language)** 를 사용하여 데이터를 엘라스틱서치에 질의하며, 최종적으로 엔지니어가 로그를 확인할 수 있는 Frontend로 사용됩니다.
 
 ## EFK
 
@@ -32,7 +32,7 @@ Elasticsearch는 강력한 검색 엔진 기능을 갖춘 Document 기반 데이
 
 ### 최소 버전의 경량화 로그 수집기 Fluent-Bit
 
-FluentD는 CNCF 재단에서 개발한 로그 수집기로 1000가지 이상의 다양한 출력 대상 플러그인을 지원하는데요. 저는 설정 방법이 크게 다르지 않은 최소 버전으로 개발된 **Fluent-Bit**를 사용하여 구성해 봤습니다.
+FluentD는 CNCF 재단에서 개발한 로그 수집기로 1000가지 이상의 다양한 출력 대상 플러그인을 지원하는데요. 저는 설정 방법이 크게 다르지 않은 최소 버전의 **Fluent-Bit**를 사용하여 구성해 봤습니다.
 
 Fluent-Bit는 **Daemonset**으로 실행하여 각 노드에 파드를 하나씩 배치해서 로그를 수집하고, 애플리케이션 로그 뿐만 아니라 노드의 시스템 로그 또한 수집하고 처리할 수 있습니다.
 
